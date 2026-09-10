@@ -1,5 +1,5 @@
 // src/models/projects.js
-const db = require('../db');
+import db from '../db.js';
 
 async function getAllProjects() {
     try {
@@ -24,4 +24,4 @@ async function getAllProjects() {
     }
 }
 
-module.exports = { getAllProjects };
+export { getAllProjects };

@@ -2,13 +2,15 @@
   "name": "cse340-service-network",
   "version": "1.0.0",
   "type": "module",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "build": "echo 'No build step required'"
+    "dev": "node server.js"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "ejs": "^3.1.9"
+    "pg": "^8.11.3"
   }
 }
