@@ -48,3 +48,13 @@ app.listen(PORT, () => {
     console.log(`Server is running at http://127.0.0.1:${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
 });
+
+app.get('/projects', async (req, res) => {
+    try {
+        const projects = await getAllProjects();
+        res.render('projects', { projects });
+    } catch (err) {
+        console.error('Error loading projects:', err);
+        res.status(500).send('Error loading projects');
+    }
+});
