@@ -6,20 +6,17 @@ dotenv.config();
 
 const { Pool } = pg;
 
-// Usa DATABASE_URL se disponível (Render), senão usa variáveis separadas (local)
-const pool = process.env.DB_URL
-    ? new Pool({
-        connectionString: process.env.DB_URL,
-        ssl: { rejectUnauthorized: false }
-    })
-    : new Pool({
-        host: process.env.DB_HOST,
-        port: Number(process.env.DB_PORT) || 5432,
-        database: process.env.DB_NAME,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
-    });
+// Configuração do Pool
+// No Render, as variáveis DB_HOST, DB_USER, etc., estarão disponíveis.
+const pool = new Pool({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT) || 5432,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    // O Render exige SSL. Se DB_SSL for 'true', ativa o SSL.
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+});
 
 pool.on('error', (err) => {
     console.error('Unexpected error on idle client', err);
