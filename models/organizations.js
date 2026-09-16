@@ -1,15 +1,24 @@
-// models/organizations.js
-import db from './db.js';   // CORRIGIDO: era '../db.js'
+import db from './db.js';
 
-async function getAllOrganizations() {
-    try {
-        const query = 'SELECT * FROM organizations ORDER BY name;';
-        const result = await db.query(query);
-        return result.rows;
-    } catch (error) {
-        console.error('Error fetching organizations:', error);
-        throw error;
-    }
-}
+const getAllOrganizations = async () => {
+    const query = `
+        SELECT organization_id, name, description, contact_email, logo_filename
+        FROM organization
+        ORDER BY name;
+    `;
+    const result = await db.query(query);
+    return result.rows;
+};
 
-export { getAllOrganizations };
+const getOrganizationDetails = async (organizationId) => {
+    const query = `
+        SELECT organization_id, name, description, contact_email, logo_filename
+        FROM organization
+        WHERE organization_id = $1;
+    `;
+    const queryParams = [organizationId];
+    const result = await db.query(query, queryParams);
+    return result.rows.length > 0 ? result.rows[0] : null;
+};
+
+export { getAllOrganizations, getOrganizationDetails };

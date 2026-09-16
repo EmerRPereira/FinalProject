@@ -1,16 +1,13 @@
 // server.js
-import 'dotenv/config'; 
+import 'dotenv/config';
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-// Importar modelos
-import { getAllProjects } from './models/projects.js';
-import { getAllOrganizations } from './models/organizations.js';
-import { getAllCategories } from './models/categories.js';
+// Importar o router (que por sua vez importa os controllers)
+import router from './routes.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
-// O Render define a PORT automaticamente. Usamos 3000 como fallback local.
 const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,45 +26,51 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Middleware para logar todas as requisições (somente em desenvolvimento)
+app.use((req, res, next) => {
+    if (NODE_ENV === 'development') {
+        console.log(`${req.method} ${req.url}`);
+    }
+    next();
+});
+
+// Middleware para tornar NODE_ENV disponível em todos os templates
+app.use((req, res, next) => {
+    res.locals.NODE_ENV = NODE_ENV;
+    next();
+});
+
 /**
  * Rotas
+ * Todas as rotas agora são gerenciadas pelo router em routes.js
  */
-app.get('/', async (req, res) => {
-    const title = 'Home';
-    res.render('home', { title });
+app.use(router);
+
+/**
+ * Tratamento de Erros
+ */
+// Catch-all para 404 - deve vir APÓS todas as rotas reais
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
 });
 
-app.get('/organizations', async (req, res) => {
-    try {
-        const organizations = await getAllOrganizations();
-        const title = 'Our Partner Organizations';
-        res.render('organizations', { title, organizations });
-    } catch (err) {
-        console.error('Error loading organizations:', err);
-        res.status(500).send('Error loading organizations');
-    }
-});
+// Error handler global - deve ser o ÚLTIMO middleware
+app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
 
-app.get('/projects', async (req, res) => {
-    try {
-        const projects = await getAllProjects();
-        const title = 'Service Projects';
-        res.render('projects', { title, projects });
-    } catch (err) {
-        console.error('Error loading projects:', err);
-        res.status(500).send('Error loading projects');
-    }
-});
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
 
-app.get('/categories', async (req, res) => {
-    try {
-        const categories = await getAllCategories();
-        const title = 'Service Categories';
-        res.render('categories', { title, categories });
-    } catch (err) {
-        console.error('Error loading categories:', err);
-        res.status(500).send('Error loading categories');
-    }
+    const context = {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: err.stack
+    };
+
+    res.status(status).render(`errors/${template}`, context);
 });
 
 // Iniciar o servidor
