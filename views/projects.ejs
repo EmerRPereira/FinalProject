@@ -1,5 +1,4 @@
 <%- include('partials/header') %>
-
 <main>
     <h1><%= title %></h1>
 
@@ -7,8 +6,13 @@
         <ul>
             <% projects.forEach(project => { %>
                 <li>
-                    <h2><%= project.title %></h2>
-                    <p><strong>Organization:</strong> <%= project.organization_name %></p>
+                    <h2>
+                        <a href="/project/<%= project.project_id %>"><%= project.title %></a>
+                    </h2>
+                    <p>
+                        <strong>Organization:</strong>
+                        <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>
+                    </p>
                     <p><strong>Location:</strong> <%= project.location %></p>
                     <p><strong>Date:</strong> <%= new Date(project.date).toLocaleDateString() %></p>
                     <p><%= project.description %></p>
@@ -16,8 +20,7 @@
             <% }) %>
         </ul>
     <% } else { %>
-        <p>No projects found.</p>
+        <p>No upcoming projects found.</p>
     <% } %>
 </main>
-
 <%- include('partials/footer') %>

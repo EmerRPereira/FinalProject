@@ -54,21 +54,20 @@ app.use((req, res, next) => {
 });
 
 // Error handler global
-app.use((err, req, res, next) => {
-    console.error('Error occurred:', err.message);
-    console.error('Stack trace:', err.stack);
+const status = err.status || 500;
+let template = '500';
+if (status === 404) template = '404';
+else if (status === 400) template = '400';
 
-    const status = err.status || 500;
-    const template = status === 404 ? '404' : '500';
+const context = {
+    title: status === 404 ? 'Page Not Found'
+         : status === 400 ? 'Bad Request'
+         : 'Server Error',
+    error: err.message,
+    stack: err.stack
+};
 
-    const context = {
-        title: status === 404 ? 'Page Not Found' : 'Server Error',
-        error: err.message,
-        stack: err.stack
-    };
-
-    res.status(status).render(`errors/${template}`, context);
-});
+res.status(status).render(`errors/${template}`, context);
 
 // Iniciar o servidor
 app.listen(PORT, async () => {
