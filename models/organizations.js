@@ -1,5 +1,5 @@
-// src/models/organizations.js
-import db from '../db.js';
+// models/organizations.js
+import db from './db.js';   // CORRIGIDO: era '../db.js'
 
 async function getAllOrganizations() {
     try {

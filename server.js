@@ -1,10 +1,12 @@
+// server.js
+import 'dotenv/config'; // Carrega .env ANTES de tudo
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
 // Importar modelos
-import { getAllProjects } from './src/models/projects.js';
-import { getAllOrganizations } from './src/models/organizations.js';
+import { getAllProjects } from './models/projects.js';
+import { getAllOrganizations } from './models/organizations.js';
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -21,14 +23,15 @@ const app = express();
  * Configure Express middleware
  */
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Servir arquivos estáticos (css, images, etc.)
+app.use(express.static(path.join(__dirname, 'css')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
 
 // Tell Express where to find your templates
-app.set('views', path.join(__dirname, 'src/views'));
+app.set('views', path.join(__dirname, 'views'));
 
 /**
  * Routes

@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+
+    <% if (projects && projects.length > 0) { %>
+        <ul>
+            <% projects.forEach(project => { %>
+                <li>
+                    <h2><%= project.title %></h2>
+                    <p><strong>Organization:</strong> <%= project.organization_name %></p>
+                    <p><strong>Location:</strong> <%= project.location %></p>
+                    <p><strong>Date:</strong> <%= new Date(project.date).toLocaleDateString() %></p>
+                    <p><%= project.description %></p>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No projects found.</p>
+    <% } %>
+</main>
+
+<%- include('partials/footer') %>

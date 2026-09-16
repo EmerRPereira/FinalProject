@@ -1,5 +1,5 @@
-// src/models/projects.js
-import db from '../db.js';
+// models/projects.js
+import db from './db.js';   // CORRIGIDO: era '../db.js'
 
 async function getAllProjects() {
     try {

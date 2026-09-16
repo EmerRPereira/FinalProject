@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+
+    <p>Here are a few of our partner organizations:</p>
+    <ul>
+        <% organizations.forEach(org => { %>
+            <li>
+                <img src="/images/<%= org.logo_filename || 'brightfuture-logo.png' %>" alt="<%= org.name %> logo">
+                <strong><%= org.name %></strong>: <%= org.email %>
+            </li>
+        <% }) %>
+    </ul>
+</main>
+
+<%- include('partials/footer') %>
