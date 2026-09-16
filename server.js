@@ -1,5 +1,5 @@
 // server.js
-import 'dotenv/config'; // Carrega .env ANTES de tudo
+import 'dotenv/config'; 
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -7,11 +7,9 @@ import path from 'path';
 // Importar modelos
 import { getAllProjects } from './models/projects.js';
 import { getAllOrganizations } from './models/organizations.js';
+import { getAllCategories } from './models/categories.js'; // NOVO
 
-// Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
-
-// Define the port number the server will listen on
 const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,23 +17,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-/**
- * Configure Express middleware
- */
-
-// Servir arquivos estáticos (css, images, etc.)
 app.use(express.static(path.join(__dirname, 'css')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Set EJS as the templating engine
 app.set('view engine', 'ejs');
-
-// Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'views'));
 
-/**
- * Routes
- */
+// Rotas
 app.get('/', async (req, res) => {
     const title = 'Home';
     res.render('home', { title });
@@ -60,6 +48,18 @@ app.get('/projects', async (req, res) => {
     } catch (err) {
         console.error('Error loading projects:', err);
         res.status(500).send('Error loading projects');
+    }
+});
+
+// NOVA ROTA: Categorias
+app.get('/categories', async (req, res) => {
+    try {
+        const categories = await getAllCategories();
+        const title = 'Service Categories';
+        res.render('categories', { title, categories });
+    } catch (err) {
+        console.error('Error loading categories:', err);
+        res.status(500).send('Error loading categories');
     }
 });
 

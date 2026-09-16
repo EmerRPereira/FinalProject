@@ -6,17 +6,34 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const pool = new Pool({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT) || 5432,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
-});
+// Usa DATABASE_URL se disponível (Render), senão usa variáveis separadas (local)
+const pool = process.env.DB_URL
+    ? new Pool({
+        connectionString: process.env.DB_URL,
+        ssl: { rejectUnauthorized: false }
+    })
+    : new Pool({
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT) || 5432,
+        database: process.env.DB_NAME,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+    });
 
 pool.on('error', (err) => {
     console.error('Unexpected error on idle client', err);
 });
 
-export default pool;
+const testConnection = async () => {
+    try {
+        const result = await pool.query('SELECT NOW() as current_time');
+        console.log('Database connection successful:', result.rows[0].current_time);
+        return true;
+    } catch (error) {
+        console.error('Database connection failed:', error.message);
+        throw error;
+    }
+};
+
+export { pool as default, testConnection };
