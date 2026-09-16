@@ -24,7 +24,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware de log
+// Middleware de log (só em desenvolvimento)
 app.use((req, res, next) => {
     if (NODE_ENV === 'development') {
         console.log(`${req.method} ${req.url}`);
@@ -53,21 +53,27 @@ app.use((req, res, next) => {
     next(err);
 });
 
-// Error handler global
-const status = err.status || 500;
-let template = '500';
-if (status === 404) template = '404';
-else if (status === 400) template = '400';
+// Error handler global (ÚLTIMO middleware)
+app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
 
-const context = {
-    title: status === 404 ? 'Page Not Found'
-         : status === 400 ? 'Bad Request'
-         : 'Server Error',
-    error: err.message,
-    stack: err.stack
-};
+    const status = err.status || 500;
 
-res.status(status).render(`errors/${template}`, context);
+    let template = '500';
+    if (status === 404) template = '404';
+    else if (status === 400) template = '400';
+
+    const context = {
+        title: status === 404 ? 'Page Not Found'
+             : status === 400 ? 'Bad Request'
+             : 'Server Error',
+        error: err.message,
+        stack: err.stack
+    };
+
+    res.status(status).render(`errors/${template}`, context);
+});
 
 // Iniciar o servidor
 app.listen(PORT, async () => {
