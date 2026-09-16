@@ -15,7 +15,7 @@ router.get('/organizations', showOrganizationsPage);
 router.get('/projects', showProjectsPage);
 router.get('/categories', showCategoriesPage);
 
-// Rota de detalhes da organização (Atividade 4)
+// Rota de detalhes da organização
 router.get('/organization/:id', showOrganizationDetailsPage);
 
 // Rota de teste para erro 500

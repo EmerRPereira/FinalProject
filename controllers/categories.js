@@ -1,3 +1,5 @@
+// controllers/categories.js
+
 import { getAllCategories } from '../models/categories.js';
 
 const showCategoriesPage = async (req, res) => {

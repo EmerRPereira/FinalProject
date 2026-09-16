@@ -1,3 +1,5 @@
+// controllers/projects.js
+
 import { getAllProjects } from '../models/projects.js';
 
 const showProjectsPage = async (req, res) => {
