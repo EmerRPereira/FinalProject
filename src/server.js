@@ -1,31 +1,59 @@
 // src/server.js
 import 'dotenv/config';
 import express from 'express';
+import session from 'express-session';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import router from './routes.js';                    // ✅ mesmo nível (dentro de src/)
-import { testConnection } from './models/db.js';     // ✅ subpasta de src/
+import router from './routes.js';
+import { testConnection } from './models/db.js';
+import flash from './middleware/flash.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);          // = .../FinalProject/src
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
 /**
- * Middleware
+ * Body Parsers (POST data)
  */
-// Como css/ e images/ estão DENTRO de src/ (mesmo nível de server.js):
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+/**
+ * Session management
+ */
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
+}));
+
+/**
+ * Flash messages
+ */
+app.use(flash);
+
+/**
+ * Static files
+ */
 app.use(express.static(path.join(__dirname, 'css')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+/**
+ * View engine
+ */
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));     // ✅ views/ dentro de src/
+app.set('views', path.join(__dirname, 'views'));
 
-// Log em desenvolvimento
+/**
+ * Log em desenvolvimento
+ */
 app.use((req, res, next) => {
     if (NODE_ENV === 'development') {
         console.log(`${req.method} ${req.url}`);
@@ -33,7 +61,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// Expor NODE_ENV aos templates
+/**
+ * Expor NODE_ENV aos templates
+ */
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
     next();
@@ -45,16 +75,17 @@ app.use((req, res, next) => {
 app.use(router);
 
 /**
- * Tratamento de Erros
+ * 404 catch-all
  */
-// Catch-all 404
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
     err.status = 404;
     next(err);
 });
 
-// Error handler global (ÚLTIMO middleware)
+/**
+ * Error handler global
+ */
 app.use((err, req, res, next) => {
     console.error('Error occurred:', err.message);
     console.error('Stack trace:', err.stack);
@@ -76,7 +107,9 @@ app.use((err, req, res, next) => {
     res.status(status).render(`errors/${template}`, context);
 });
 
-// Iniciar servidor
+/**
+ * Start server
+ */
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
