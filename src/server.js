@@ -19,13 +19,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 /**
- * Body Parsers (POST data)
+ * 1. Body parsers (POST data)
  */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 /**
- * Session management
+ * 2. Session management
  */
 app.use(session({
     secret: SESSION_SECRET,
@@ -35,24 +35,24 @@ app.use(session({
 }));
 
 /**
- * Flash messages
+ * 3. Flash messages
  */
 app.use(flash);
 
 /**
- * Static files
+ * 4. Static files
  */
 app.use(express.static(path.join(__dirname, 'css')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 /**
- * View engine
+ * 5. View engine
  */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 /**
- * Log em desenvolvimento
+ * 6. Log em desenvolvimento
  */
 app.use((req, res, next) => {
     if (NODE_ENV === 'development') {
@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 });
 
 /**
- * Expor NODE_ENV aos templates
+ * 7. Expor NODE_ENV aos templates
  */
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
@@ -70,12 +70,12 @@ app.use((req, res, next) => {
 });
 
 /**
- * Rotas
+ * 8. Rotas
  */
 app.use(router);
 
 /**
- * 404 catch-all
+ * 9. 404 catch-all
  */
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
@@ -84,7 +84,7 @@ app.use((req, res, next) => {
 });
 
 /**
- * Error handler global
+ * 10. Error handler global
  */
 app.use((err, req, res, next) => {
     console.error('Error occurred:', err.message);
@@ -108,7 +108,7 @@ app.use((err, req, res, next) => {
 });
 
 /**
- * Start server
+ * 11. Start server
  */
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
