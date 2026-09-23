@@ -1,6 +1,10 @@
 // controllers/projects.js
 
-import { getUpcomingProjects, getProjectDetails } from '../models/projects.js';
+import {
+    getUpcomingProjects,
+    getProjectDetails,
+    getCategoriesByProjectId
+} from '../models/projects.js';
 
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
 
@@ -25,8 +29,11 @@ const showProjectDetailsPage = async (req, res, next) => {
             return next(err);
         }
 
+        // NOVO: buscar categorias do projeto
+        const categories = await getCategoriesByProjectId(projectId);
+
         const title = project.title;
-        res.render('project', { title, project });
+        res.render('project', { title, project, categories });
     } catch (err) {
         next(err);
     }

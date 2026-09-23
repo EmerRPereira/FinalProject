@@ -82,9 +82,25 @@ const getProjectDetails = async (id) => {
     return result.rows.length > 0 ? result.rows[0] : null;
 };
 
+// NOVA: buscar todas as categorias de um projeto
+const getCategoriesByProjectId = async (projectId) => {
+    const query = `
+        SELECT
+            c.category_id,
+            c.name
+        FROM categories c
+        JOIN project_categories pc ON pc.category_id = c.category_id
+        WHERE pc.project_id = $1
+        ORDER BY c.name;
+    `;
+    const result = await db.query(query, [projectId]);
+    return result.rows;
+};
+
 export {
     getAllProjects,
     getProjectsByOrganizationId,
     getUpcomingProjects,
-    getProjectDetails
+    getProjectDetails,
+    getCategoriesByProjectId    // ← adicione
 };

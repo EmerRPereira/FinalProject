@@ -1,6 +1,18 @@
 <%- include('partials/header') %>
+
 <main>
     <h1><%= project.title %></h1>
+
+    <!-- NOVO: Tags de categorias -->
+    <% if (categories && categories.length > 0) { %>
+        <div class="category-tags">
+            <% categories.forEach(category => { %>
+                <a href="/category/<%= category.category_id %>" class="tag">
+                    <%= category.name %>
+                </a>
+            <% }) %>
+        </div>
+    <% } %>
 
     <p><strong>Description:</strong> <%= project.description %></p>
     <p><strong>Date:</strong> <%= new Date(project.date).toLocaleDateString() %></p>
@@ -10,4 +22,5 @@
         <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>
     </p>
 </main>
+
 <%- include('partials/footer') %>

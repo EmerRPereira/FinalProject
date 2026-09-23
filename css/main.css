@@ -49,3 +49,26 @@ main ul li img {
     height: 60px;
     object-fit: contain;
 }
+
+/* Tags de categorias */
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.tag {
+    background-color: #0066cc;
+    color: white;
+    padding: 0.3rem 0.9rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.tag:hover {
+    background-color: #004499;
+    color: white;
+}
