@@ -1,30 +1,31 @@
-// server.js
+// src/server.js
 import 'dotenv/config';
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import router from './routes.js';
-import { testConnection } from './models/db.js';
+import router from './routes.js';                    // ✅ mesmo nível (dentro de src/)
+import { testConnection } from './models/db.js';     // ✅ subpasta de src/
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename);          // = .../FinalProject/src
 
 const app = express();
 
 /**
- * Configuração de Middleware
+ * Middleware
  */
+// Como css/ e images/ estão DENTRO de src/ (mesmo nível de server.js):
 app.use(express.static(path.join(__dirname, 'css')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));     // ✅ views/ dentro de src/
 
-// Middleware de log (só em desenvolvimento)
+// Log em desenvolvimento
 app.use((req, res, next) => {
     if (NODE_ENV === 'development') {
         console.log(`${req.method} ${req.url}`);
@@ -32,7 +33,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware para expor NODE_ENV aos templates
+// Expor NODE_ENV aos templates
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
     next();
@@ -46,7 +47,7 @@ app.use(router);
 /**
  * Tratamento de Erros
  */
-// Catch-all para 404
+// Catch-all 404
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
     err.status = 404;
@@ -75,7 +76,7 @@ app.use((err, req, res, next) => {
     res.status(status).render(`errors/${template}`, context);
 });
 
-// Iniciar o servidor
+// Iniciar servidor
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
