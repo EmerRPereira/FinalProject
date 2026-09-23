@@ -1,8 +1,8 @@
 // models/categories.js
 import db from './db.js';
 
-// Já existente
-async function getAllCategories() {
+// Lista todas as categorias
+const getAllCategories = async () => {
     try {
         const query = 'SELECT * FROM categories ORDER BY name;';
         const result = await db.query(query);
@@ -11,10 +11,10 @@ async function getAllCategories() {
         console.error('Error fetching categories:', error);
         throw error;
     }
-}
+};
 
-// NOVA: buscar uma categoria específica por ID
-async function getCategoryDetails(categoryId) {
+// Busca uma categoria específica por ID
+const getCategoryDetails = async (categoryId) => {
     try {
         const query = 'SELECT * FROM categories WHERE category_id = $1;';
         const result = await db.query(query, [categoryId]);
@@ -23,10 +23,10 @@ async function getCategoryDetails(categoryId) {
         console.error('Error fetching category details:', error);
         throw error;
     }
-}
+};
 
-// NOVA: buscar todos os projetos de uma categoria
-async function getProjectsByCategoryId(categoryId) {
+// Busca todos os projetos de uma categoria
+const getProjectsByCategoryId = async (categoryId) => {
     try {
         const query = `
             SELECT
@@ -49,7 +49,7 @@ async function getProjectsByCategoryId(categoryId) {
         console.error('Error fetching projects by category:', error);
         throw error;
     }
-}
+};
 
 export {
     getAllCategories,
