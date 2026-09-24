@@ -20,7 +20,9 @@ import {
 } from './controllers/projects.js';
 import {
     showCategoriesPage,
-    showCategoryDetailsPage
+    showCategoryDetailsPage,
+    showAssignCategoriesForm,
+    processAssignCategoriesForm
 } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
 
@@ -58,6 +60,12 @@ router.post('/edit-organization/:id', organizationValidation, processEditOrganiz
  */
 router.get('/new-project', showNewProjectForm);
 router.post('/new-project', projectValidation, processNewProjectForm);
+
+/**
+ * Assign categories to project (W04)
+ */
+router.get('/assign-categories/:projectId', showAssignCategoriesForm);
+router.post('/assign-categories/:projectId', processAssignCategoriesForm);
 
 /**
  * Error test route
