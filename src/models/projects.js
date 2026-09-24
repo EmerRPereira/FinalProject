@@ -1,8 +1,6 @@
-// models/projects.js
-
+// src/models/projects.js
 import db from './db.js';
 
-// Mantém a função antiga (pode ser usada em outros lugares)
 const getAllProjects = async () => {
     const query = `
         SELECT
@@ -21,7 +19,6 @@ const getAllProjects = async () => {
     return result.rows;
 };
 
-// Usada na página de detalhes da organização
 const getProjectsByOrganizationId = async (organizationId) => {
     const query = `
         SELECT
@@ -40,7 +37,6 @@ const getProjectsByOrganizationId = async (organizationId) => {
     return result.rows;
 };
 
-// NOVA: próximos N projetos a partir da data atual
 const getUpcomingProjects = async (number_of_projects) => {
     const query = `
         SELECT
@@ -62,7 +58,6 @@ const getUpcomingProjects = async (number_of_projects) => {
     return result.rows;
 };
 
-// NOVA: detalhes de um projeto específico
 const getProjectDetails = async (id) => {
     const query = `
         SELECT
@@ -82,7 +77,6 @@ const getProjectDetails = async (id) => {
     return result.rows.length > 0 ? result.rows[0] : null;
 };
 
-// NOVA: buscar todas as categorias de um projeto
 const getCategoriesByProjectId = async (projectId) => {
     const query = `
         SELECT
@@ -97,10 +91,34 @@ const getCategoriesByProjectId = async (projectId) => {
     return result.rows;
 };
 
+/**
+ * Creates a new service project in the database (W04)
+ */
+const createProject = async (title, description, location, date, organizationId) => {
+    const query = `
+        INSERT INTO service_projects (title, description, location, date, organization_id)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING project_id;
+    `;
+    const queryParams = [title, description, location, date, organizationId];
+    const result = await db.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create project');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Created new project with ID:', result.rows[0].project_id);
+    }
+
+    return result.rows[0].project_id;
+};
+
 export {
     getAllProjects,
     getProjectsByOrganizationId,
     getUpcomingProjects,
     getProjectDetails,
-    getCategoriesByProjectId    // ← adicione
+    getCategoriesByProjectId,
+    createProject
 };

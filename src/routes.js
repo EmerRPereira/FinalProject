@@ -13,7 +13,10 @@ import {
 } from './controllers/organizations.js';
 import {
     showProjectsPage,
-    showProjectDetailsPage
+    showProjectDetailsPage,
+    showNewProjectForm,
+    processNewProjectForm,
+    projectValidation
 } from './controllers/projects.js';
 import {
     showCategoriesPage,
@@ -39,16 +42,22 @@ router.get('/project/:id', showProjectDetailsPage);
 router.get('/category/:id', showCategoryDetailsPage);
 
 /**
- * New organization form (W04 - Form Submissions + Validation)
+ * New organization form (W04)
  */
 router.get('/new-organization', showNewOrganizationForm);
 router.post('/new-organization', organizationValidation, processNewOrganizationForm);
 
 /**
- * Edit organization form (W04 - Updating Data)
+ * Edit organization form (W04)
  */
 router.get('/edit-organization/:id', showEditOrganizationForm);
 router.post('/edit-organization/:id', organizationValidation, processEditOrganizationForm);
+
+/**
+ * New project form (W04)
+ */
+router.get('/new-project', showNewProjectForm);
+router.post('/new-project', projectValidation, processNewProjectForm);
 
 /**
  * Error test route
