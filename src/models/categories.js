@@ -37,6 +37,51 @@ const getProjectsByCategoryId = async (categoryId) => {
 };
 
 /**
+ * Creates a new category in the database (W04)
+ */
+const createCategory = async (name) => {
+    const query = `
+        INSERT INTO categories (name)
+        VALUES ($1)
+        RETURNING category_id;
+    `;
+    const result = await db.query(query, [name]);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create category');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Created new category with ID:', result.rows[0].category_id);
+    }
+
+    return result.rows[0].category_id;
+};
+
+/**
+ * Updates an existing category in the database (W04)
+ */
+const updateCategory = async (categoryId, name) => {
+    const query = `
+        UPDATE categories
+        SET name = $1
+        WHERE category_id = $2
+        RETURNING category_id;
+    `;
+    const result = await db.query(query, [name, categoryId]);
+
+    if (result.rows.length === 0) {
+        throw new Error('Category not found');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Updated category with ID:', categoryId);
+    }
+
+    return result.rows[0].category_id;
+};
+
+/**
  * Assigns a single category to a project in the join table (W04)
  */
 const assignCategoryToProject = async (categoryId, projectId) => {
@@ -52,14 +97,12 @@ const assignCategoryToProject = async (categoryId, projectId) => {
  * First removes all existing assignments, then adds the new ones.
  */
 const updateCategoryAssignments = async (projectId, categoryIds) => {
-    // First, remove existing category assignments for the project
     const deleteQuery = `
         DELETE FROM project_categories
         WHERE project_id = $1;
     `;
     await db.query(deleteQuery, [projectId]);
 
-    // Next, add the new category assignments
     for (const categoryId of categoryIds) {
         await assignCategoryToProject(categoryId, projectId);
     }
@@ -69,5 +112,7 @@ export {
     getAllCategories,
     getCategoryDetails,
     getProjectsByCategoryId,
+    createCategory,
+    updateCategory,
     updateCategoryAssignments
 };

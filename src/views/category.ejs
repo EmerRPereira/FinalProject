@@ -3,6 +3,8 @@
 <main>
     <h1><%= category.name %></h1>
 
+    <p><a href="/edit-category/<%= category.category_id %>">Edit Category</a></p>
+
     <h2>Service Projects in this Category</h2>
 
     <% if (projects && projects.length > 0) { %>
