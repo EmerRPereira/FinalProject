@@ -7,7 +7,7 @@ import {
     updateCategory,
     updateCategoryAssignments
 } from '../models/categories.js';
-import { getProjectDetails } from '../models/projects.js';
+import { getProjectDetails, getCategoriesByProjectId } from '../models/projects.js';
 import { body, validationResult } from 'express-validator';
 
 /**
@@ -53,17 +53,11 @@ const showCategoryDetailsPage = async (req, res, next) => {
     }
 };
 
-/**
- * Show the new category form (W04)
- */
 const showNewCategoryForm = (req, res) => {
     const title = 'Add New Category';
     res.render('new-category', { title });
 };
 
-/**
- * Process the new category form submission (W04)
- */
 const processNewCategoryForm = async (req, res) => {
     const results = validationResult(req);
     if (!results.isEmpty()) {
@@ -86,9 +80,6 @@ const processNewCategoryForm = async (req, res) => {
     }
 };
 
-/**
- * Show the edit category form (W04)
- */
 const showEditCategoryForm = async (req, res, next) => {
     try {
         const categoryId = req.params.id;
@@ -107,9 +98,6 @@ const showEditCategoryForm = async (req, res, next) => {
     }
 };
 
-/**
- * Process the edit category form submission (W04)
- */
 const processEditCategoryForm = async (req, res) => {
     const results = validationResult(req);
     if (!results.isEmpty()) {
@@ -133,9 +121,6 @@ const processEditCategoryForm = async (req, res) => {
     }
 };
 
-/**
- * Show the assign categories to project form (W04)
- */
 const showAssignCategoriesForm = async (req, res, next) => {
     try {
         const projectId = req.params.projectId;
@@ -148,7 +133,7 @@ const showAssignCategoriesForm = async (req, res, next) => {
         }
 
         const categories = await getAllCategories();
-        const assignedCategories = await (await import('../models/projects.js')).getCategoriesByProjectId(projectId);
+        const assignedCategories = await getCategoriesByProjectId(projectId);
 
         const title = `Assign Categories to ${projectDetails.title}`;
         res.render('assign-categories', {
@@ -163,15 +148,10 @@ const showAssignCategoriesForm = async (req, res, next) => {
     }
 };
 
-/**
- * Process the assign categories form submission (W04)
- */
 const processAssignCategoriesForm = async (req, res, next) => {
     try {
         const projectId = req.params.projectId;
 
-        // Express returns a single value if only one checkbox is selected,
-        // and undefined if none are selected.
         let categoryIds = req.body.categoryIds || [];
         if (!Array.isArray(categoryIds)) {
             categoryIds = [categoryIds];
