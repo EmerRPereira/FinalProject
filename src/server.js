@@ -62,10 +62,19 @@ app.use((req, res, next) => {
 });
 
 /**
- * 7. Expor NODE_ENV aos templates
+ * 7. Expor NODE_ENV, isLoggedIn e user aos templates (W05)
  */
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
+    res.locals.isLoggedIn = false;
+
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+    }
+
+    // W05: disponibiliza os dados do usuário (incluindo role_name) em todas as views
+    res.locals.user = req.session.user || null;
+
     next();
 });
 
