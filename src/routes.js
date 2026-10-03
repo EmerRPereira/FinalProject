@@ -1,5 +1,6 @@
 // src/routes.js
 import express from 'express';
+import { body } from 'express-validator';
 
 // Controllers públicos
 import { showHomePage, showDashboard } from './controllers/index.js';
@@ -57,12 +58,33 @@ import {
 const router = express.Router();
 
 /* ============================================================
+ * W05: Validação de registro
+ * ============================================================
+ * Regras para o formulário de criação de conta.
+ * - name: obrigatório, sem espaços em branco
+ * - email: formato de e-mail válido
+ * - password: mínimo de 6 caracteres
+ */
+const registerValidation = [
+    body('name')
+        .trim()
+        .notEmpty().withMessage('Name is required'),
+
+    body('email')
+        .isEmail().withMessage('Valid email required'),
+
+    body('password')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+];
+
+/* ============================================================
  * Authentication routes (W05)
  * ============================================================
  * Registro, login e logout.
+ * A rota de registro usa registerValidation antes do controller.
  */
 router.get('/register', showRegisterForm);
-router.post('/register', processRegister);
+router.post('/register', registerValidation, processRegister);
 router.get('/login', showLoginForm);
 router.post('/login', processLogin);
 router.get('/logout', processLogout);

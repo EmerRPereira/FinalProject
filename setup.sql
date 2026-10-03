@@ -2,7 +2,7 @@
 -- CSE 340 Service Network - Database Setup Script
 -- Execute este arquivo para recriar o banco de dados do zero.
 -- ============================================================
-
+-- setup.sql
 -- ============================================================
 -- 0. LIMPEZA (ordem importa por causa das FKs)
 -- ============================================================
