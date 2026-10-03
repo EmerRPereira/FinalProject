@@ -2,10 +2,11 @@
 -- CSE 340 Service Network - Database Setup Script
 -- Execute este arquivo para recriar o banco de dados do zero.
 -- ============================================================
--- setup.sql
+
 -- ============================================================
 -- 0. LIMPEZA (ordem importa por causa das FKs)
 -- ============================================================
+DROP TABLE IF EXISTS project_volunteers CASCADE;
 DROP TABLE IF EXISTS project_categories CASCADE;
 DROP TABLE IF EXISTS service_projects CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
@@ -73,14 +74,23 @@ CREATE TABLE project_categories (
 );
 
 -- ============================================================
--- 7. DADOS: roles (W05)
+-- 7. TABELA DE JUNÇÃO: project_volunteers (W06 - N:N)
+-- ============================================================
+CREATE TABLE project_volunteers (
+    user_id    INTEGER NOT NULL REFERENCES users(user_id)              ON DELETE CASCADE,
+    project_id INTEGER NOT NULL REFERENCES service_projects(project_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, project_id)
+);
+
+-- ============================================================
+-- 8. DADOS: roles
 -- ============================================================
 INSERT INTO roles (role_name) VALUES
 ('user'),
 ('admin');
 
 -- ============================================================
--- 8. DADOS DE EXEMPLO: organizations
+-- 9. DADOS DE EXEMPLO: organizations
 -- ============================================================
 INSERT INTO organizations (name, description, contact_email, logo_filename) VALUES
 ('BrightFuture Builders', 'A nonprofit focused on improving community infrastructure through sustainable construction projects.', 'info@brightfuturebuilders.org', 'brightfuture-logo.png'),
@@ -88,7 +98,7 @@ INSERT INTO organizations (name, description, contact_email, logo_filename) VALU
 ('UnityServe Volunteers', 'A volunteer coordination group supporting local charities and service initiatives.', 'hello@unityserve.org', 'unityserve-logo.png');
 
 -- ============================================================
--- 9. DADOS DE EXEMPLO: categories
+-- 10. DADOS DE EXEMPLO: categories
 -- ============================================================
 INSERT INTO categories (name) VALUES
 ('Environment'),
@@ -97,7 +107,7 @@ INSERT INTO categories (name) VALUES
 ('Health & Wellness');
 
 -- ============================================================
--- 10. DADOS DE EXEMPLO: service_projects
+-- 11. DADOS DE EXEMPLO: service_projects
 -- ============================================================
 INSERT INTO service_projects (organization_id, title, description, location, date) VALUES
 (1, 'Community Center Renovation', 'Renovate the local community center to serve more families.', 'São Paulo, SP', '2026-03-15'),
@@ -117,7 +127,7 @@ INSERT INTO service_projects (organization_id, title, description, location, dat
 (3, 'Literacy Tutoring Program',   'Tutor children in reading and writing.',                     'Salvador, BA', '2026-07-30');
 
 -- ============================================================
--- 11. DADOS DE EXEMPLO: project_categories
+-- 12. DADOS DE EXEMPLO: project_categories
 -- ============================================================
 INSERT INTO project_categories (project_id, category_id) VALUES
 (1, 3), (1, 4),
@@ -137,7 +147,7 @@ INSERT INTO project_categories (project_id, category_id) VALUES
 (15, 2), (15, 3);
 
 -- ============================================================
--- 12. NOTA: A conta admin (admin@example.com) deve ser criada
+-- 13. NOTA: A conta admin (admin@example.com) deve ser criada
 --     pela PÁGINA DE CADASTRO do site (para que o bcrypt funcione).
 --     Depois, execute o UPDATE abaixo para dar role admin:
 --

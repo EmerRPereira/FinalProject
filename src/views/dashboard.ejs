@@ -20,6 +20,41 @@
             <li><a href="/new-category">Add New Category</a></li>
         <% } %>
     </ul>
+
+    <%# W06: Lista de projetos em que o usuário é voluntário %>
+    <hr>
+    <h3>Projects I'm Volunteering For</h3>
+
+    <% if (volunteerProjects && volunteerProjects.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Organization</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% volunteerProjects.forEach(project => { %>
+                    <tr>
+                        <td><a href="/project/<%= project.project_id %>"><%= project.title %></a></td>
+                        <td><%= project.organization_name %></td>
+                        <td><%= new Date(project.date).toLocaleDateString() %></td>
+                        <td><%= project.location %></td>
+                        <td>
+                            <form action="/project/<%= project.project_id %>/unvolunteer" method="POST">
+                                <button type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>You haven't volunteered for any projects yet. <a href="/projects">Browse projects</a> to get started!</p>
+    <% } %>
 </main>
 
 <%- include('partials/footer') %>

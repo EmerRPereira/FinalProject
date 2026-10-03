@@ -55,15 +55,17 @@ import {
     showUsersPage
 } from './controllers/users.js';
 
+// W06: voluntários
+import {
+    processVolunteerSignup,
+    processVolunteerRemoval
+} from './controllers/volunteers.js';
+
 const router = express.Router();
 
 /* ============================================================
  * W05: Validação de registro
  * ============================================================
- * Regras para o formulário de criação de conta.
- * - name: obrigatório, sem espaços em branco
- * - email: formato de e-mail válido
- * - password: mínimo de 6 caracteres
  */
 const registerValidation = [
     body('name')
@@ -80,8 +82,6 @@ const registerValidation = [
 /* ============================================================
  * Authentication routes (W05)
  * ============================================================
- * Registro, login e logout.
- * A rota de registro usa registerValidation antes do controller.
  */
 router.get('/register', showRegisterForm);
 router.post('/register', registerValidation, processRegister);
@@ -92,7 +92,6 @@ router.get('/logout', processLogout);
 /* ============================================================
  * Main routes (públicas)
  * ============================================================
- * Acessíveis sem login.
  */
 router.get('/', showHomePage);
 router.get('/organizations', showOrganizationsPage);
@@ -102,7 +101,6 @@ router.get('/categories', showCategoriesPage);
 /* ============================================================
  * Detail routes (públicas)
  * ============================================================
- * Detalhes de organização, projeto e categoria.
  */
 router.get('/organization/:id', showOrganizationDetailsPage);
 router.get('/project/:id', showProjectDetailsPage);
@@ -111,24 +109,18 @@ router.get('/category/:id', showCategoryDetailsPage);
 /* ============================================================
  * W05 Assignment: Dashboard (requer login)
  * ============================================================
- * Página inicial após login. Redireciona para /login se não
- * estiver autenticado.
  */
 router.get('/dashboard', requireLogin, showDashboard);
 
 /* ============================================================
  * W05 Assignment: Users list (requer admin)
  * ============================================================
- * Lista todos os usuários registrados. Apenas admins podem
- * acessar. Non-admins são redirecionados para /dashboard.
  */
 router.get('/users', requireRole('admin'), showUsersPage);
 
 /* ============================================================
  * W05: Rotas administrativas (protegidas por requireRole)
  * ============================================================
- * Todas as rotas de criação/edição exigem role 'admin'.
- * Aplicado em GET (mostra formulário) e POST (processa envio).
  */
 
 // Organizations
@@ -157,9 +149,18 @@ router.get('/assign-categories/:projectId', requireRole('admin'), showAssignCate
 router.post('/assign-categories/:projectId', requireRole('admin'), processAssignCategoriesForm);
 
 /* ============================================================
+ * W06: Volunteer routes (requerem login)
+ * ============================================================
+ * Adicionar e remover voluntário de um projeto.
+ * Protegidas por requireLogin — qualquer usuário logado pode
+ * se voluntariar, não apenas admins.
+ */
+router.post('/project/:projectId/volunteer', requireLogin, processVolunteerSignup);
+router.post('/project/:projectId/unvolunteer', requireLogin, processVolunteerRemoval);
+
+/* ============================================================
  * Error test route (desenvolvimento)
  * ============================================================
- * Rota para testar o handler de erro 500.
  */
 router.get('/test-error', testErrorPage);
 

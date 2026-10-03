@@ -27,6 +27,22 @@
         <strong>Organization:</strong>
         <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>
     </p>
+
+    <%# W06: Volunteer functionality (only for logged-in users) %>
+    <% if (isLoggedIn) { %>
+        <hr>
+        <h3>Volunteer</h3>
+        <% if (userIsVolunteer) { %>
+            <p><strong>You are volunteering for this project.</strong></p>
+            <form action="/project/<%= project.project_id %>/unvolunteer" method="POST">
+                <button type="submit">Remove Me as Volunteer</button>
+            </form>
+        <% } else { %>
+            <form action="/project/<%= project.project_id %>/volunteer" method="POST">
+                <button type="submit">Volunteer for this Project</button>
+            </form>
+        <% } %>
+    <% } %>
 </main>
 
 <%- include('partials/footer') %>

@@ -7,6 +7,7 @@ import {
     updateProject
 } from '../models/projects.js';
 import { getAllOrganizations } from '../models/organizations.js';
+import { isVolunteer } from '../models/volunteers.js';
 import { body, validationResult } from 'express-validator';
 
 const NUMBER_OF_UPCOMING_PROJECTS = 5;
@@ -61,9 +62,20 @@ const showProjectDetailsPage = async (req, res, next) => {
         }
 
         const categories = await getCategoriesByProjectId(projectId);
-        const title = project.title;
 
-        res.render('project', { title, project, categories });
+        // W06: verifica se o usuário logado é voluntário neste projeto
+        let userIsVolunteer = false;
+        if (req.session.user) {
+            userIsVolunteer = await isVolunteer(req.session.user.user_id, projectId);
+        }
+
+        const title = project.title;
+        res.render('project', {
+            title,
+            project,
+            categories,
+            userIsVolunteer
+        });
     } catch (err) {
         next(err);
     }
