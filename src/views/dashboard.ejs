@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+
+    <h2>Welcome, <%= user.name %>!</h2>
+
+    <p>You are logged in as <strong><%= user.role_name %></strong>.</p>
+
+    <h3>Quick Links</h3>
+    <ul>
+        <li><a href="/organizations">Organizations</a></li>
+        <li><a href="/projects">Projects</a></li>
+        <li><a href="/categories">Categories</a></li>
+
+        <% if (user && user.role_name === 'admin') { %>
+            <li><a href="/users">Manage Users</a></li>
+            <li><a href="/new-organization">Add New Organization</a></li>
+            <li><a href="/new-project">Add New Project</a></li>
+            <li><a href="/new-category">Add New Category</a></li>
+        <% } %>
+    </ul>
+</main>
+
+<%- include('partials/footer') %>

@@ -2,7 +2,8 @@
 import {
     createUser,
     findUserByEmail,
-    verifyPassword
+    verifyPassword,
+    getAllUsers
 } from '../models/users.js';
 
 /**
@@ -15,13 +16,11 @@ const showRegisterForm = (req, res) => {
 
 /**
  * Processa o formulário de registro.
- * Cria um novo usuário com role 'user' por padrão.
  */
 const processRegister = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        // Verifica se já existe
         const existing = await findUserByEmail(email);
         if (existing) {
             req.flash('error', 'Email already registered.');
@@ -48,7 +47,6 @@ const showLoginForm = (req, res) => {
 
 /**
  * Processa o formulário de login.
- * Armazena os dados do usuário na sessão (incluindo role_name).
  */
 const processLogin = async (req, res) => {
     const { email, password } = req.body;
@@ -68,7 +66,6 @@ const processLogin = async (req, res) => {
             return res.redirect('/login');
         }
 
-        // Salva os dados na sessão (NÃO inclui password_hash!)
         req.session.user = {
             user_id: user.user_id,
             name: user.name,
@@ -77,7 +74,7 @@ const processLogin = async (req, res) => {
         };
 
         req.flash('success', `Welcome back, ${user.name}!`);
-        res.redirect('/');
+        res.redirect('/dashboard');
     } catch (error) {
         console.error('Error during login:', error);
         req.flash('error', 'There was an error logging in.');
@@ -99,27 +96,55 @@ const processLogout = (req, res) => {
 
 /**
  * ============================================================
+ * W05: Middleware requireLogin (fábrica de funções)
+ * ============================================================
+ * Garante que o usuário está logado. Se não estiver,
+ * redireciona para /login com uma mensagem.
+ */
+const requireLogin = (req, res, next) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in to access that page.');
+        return res.redirect('/login');
+    }
+    next();
+};
+
+/**
+ * ============================================================
  * W05: Middleware requireRole (fábrica de funções)
  * ============================================================
- * Retorna um middleware que verifica se o usuário logado possui
- * a role especificada. Como o Express só passa (req, res, next)
- * para middlewares, precisamos de uma fábrica de funções para
- * permitir parâmetros extras (a role exigida).
  */
 const requireRole = (role) => {
     return (req, res, next) => {
         if (!req.session.user) {
             req.flash('error', 'You must be logged in to access that page.');
-            return res.redirect('/');
+            return res.redirect('/login');
         }
 
         if (req.session.user.role_name !== role) {
             req.flash('error', 'You do not have permission to access that page.');
-            return res.redirect('/');
+            return res.redirect('/dashboard');
         }
 
         next();
     };
+};
+
+/**
+ * ============================================================
+ * W05 Assignment: Mostra a página com todos os usuários
+ * ============================================================
+ * Esta rota é protegida por requireRole('admin') no routes.js,
+ * então só chega aqui se o usuário for admin.
+ */
+const showUsersPage = async (req, res, next) => {
+    try {
+        const users = await getAllUsers();
+        const title = 'Registered Users';
+        res.render('users', { title, users });
+    } catch (err) {
+        next(err);
+    }
 };
 
 export {
@@ -128,5 +153,7 @@ export {
     showLoginForm,
     processLogin,
     processLogout,
-    requireRole
+    requireLogin,
+    requireRole,
+    showUsersPage
 };

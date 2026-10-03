@@ -1,6 +1,6 @@
 // src/models/users.js
 import db from './db.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 /**
  * Cria um novo usuário no banco de dados.
@@ -26,8 +26,6 @@ const createUser = async (name, email, plainPassword) => {
 
 /**
  * Busca um usuário pelo e-mail, retornando o role_name (W05).
- * Agora a query faz JOIN com a tabela roles para retornar role_name
- * em vez de apenas role_id.
  */
 const findUserByEmail = async (email) => {
     const query = `
@@ -47,8 +45,25 @@ const verifyPassword = async (plainPassword, passwordHash) => {
     return bcrypt.compare(plainPassword, passwordHash);
 };
 
+/**
+ * ============================================================
+ * W05 Assignment: Lista todos os usuários com suas roles
+ * ============================================================
+ */
+const getAllUsers = async () => {
+    const query = `
+        SELECT u.user_id, u.name, u.email, r.role_name
+        FROM users u
+        JOIN roles r ON u.role_id = r.role_id
+        ORDER BY u.name;
+    `;
+    const result = await db.query(query);
+    return result.rows;
+};
+
 export {
     createUser,
     findUserByEmail,
-    verifyPassword
+    verifyPassword,
+    getAllUsers
 };
