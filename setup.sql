@@ -1,10 +1,10 @@
 -- ============================================================
 -- CSE 340 Service Network - Database Setup Script
--- Execute este arquivo para recriar o banco de dados do zero.
+-- Run this file to recreate the database from scratch.
 -- ============================================================
 
 -- ============================================================
--- 0. LIMPEZA (ordem importa por causa das FKs)
+-- 0. CLEANLINESS (order matters because of FKs)
 -- ============================================================
 DROP TABLE IF EXISTS project_volunteers CASCADE;
 DROP TABLE IF EXISTS project_categories CASCADE;
@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS roles CASCADE;
 
 -- ============================================================
--- 1. TABELA: roles (W05)
+-- 1. TABLE: roles (W05)
 -- ============================================================
 CREATE TABLE roles (
     role_id   SERIAL PRIMARY KEY,
@@ -23,7 +23,7 @@ CREATE TABLE roles (
 );
 
 -- ============================================================
--- 2. TABELA: users (W05)
+-- 2. TABLE: users (W05)
 -- ============================================================
 CREATE TABLE users (
     user_id       SERIAL PRIMARY KEY,
@@ -34,7 +34,7 @@ CREATE TABLE users (
 );
 
 -- ============================================================
--- 3. TABELA: organizations
+-- 3. TABLE: organizations
 -- ============================================================
 CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
@@ -45,7 +45,7 @@ CREATE TABLE organizations (
 );
 
 -- ============================================================
--- 4. TABELA: categories
+-- 4. TABLE: categories
 -- ============================================================
 CREATE TABLE categories (
     category_id SERIAL PRIMARY KEY,
@@ -53,7 +53,7 @@ CREATE TABLE categories (
 );
 
 -- ============================================================
--- 5. TABELA: service_projects
+-- 5. TABLE: service_projects
 -- ============================================================
 CREATE TABLE service_projects (
     project_id      SERIAL PRIMARY KEY,
@@ -65,7 +65,7 @@ CREATE TABLE service_projects (
 );
 
 -- ============================================================
--- 6. TABELA DE JUNÇÃO: project_categories (N:N)
+-- 6. JOIN TABLE: project_categories (N:N)
 -- ============================================================
 CREATE TABLE project_categories (
     project_id  INTEGER NOT NULL REFERENCES service_projects(project_id) ON DELETE CASCADE,
@@ -74,7 +74,7 @@ CREATE TABLE project_categories (
 );
 
 -- ============================================================
--- 7. TABELA DE JUNÇÃO: project_volunteers (W06 - N:N)
+-- 7. JOIN TABLE: project_volunteers (W06 - N:N)
 -- ============================================================
 CREATE TABLE project_volunteers (
     user_id    INTEGER NOT NULL REFERENCES users(user_id)              ON DELETE CASCADE,
@@ -83,14 +83,14 @@ CREATE TABLE project_volunteers (
 );
 
 -- ============================================================
--- 8. DADOS: roles
+-- 8. DATA: roles
 -- ============================================================
 INSERT INTO roles (role_name) VALUES
 ('user'),
 ('admin');
 
 -- ============================================================
--- 9. DADOS DE EXEMPLO: organizations
+-- 9. EXAMPLE DATA: organizations
 -- ============================================================
 INSERT INTO organizations (name, description, contact_email, logo_filename) VALUES
 ('BrightFuture Builders', 'A nonprofit focused on improving community infrastructure through sustainable construction projects.', 'info@brightfuturebuilders.org', 'brightfuture-logo.png'),
@@ -98,7 +98,7 @@ INSERT INTO organizations (name, description, contact_email, logo_filename) VALU
 ('UnityServe Volunteers', 'A volunteer coordination group supporting local charities and service initiatives.', 'hello@unityserve.org', 'unityserve-logo.png');
 
 -- ============================================================
--- 10. DADOS DE EXEMPLO: categories
+-- 10. EXAMPLE DATA: categories
 -- ============================================================
 INSERT INTO categories (name) VALUES
 ('Environment'),
@@ -107,7 +107,7 @@ INSERT INTO categories (name) VALUES
 ('Health & Wellness');
 
 -- ============================================================
--- 11. DADOS DE EXEMPLO: service_projects
+-- 11. EXAMPLE DATA: service_projects
 -- ============================================================
 INSERT INTO service_projects (organization_id, title, description, location, date) VALUES
 (1, 'Community Center Renovation', 'Renovate the local community center to serve more families.', 'São Paulo, SP', '2026-03-15'),
@@ -127,7 +127,7 @@ INSERT INTO service_projects (organization_id, title, description, location, dat
 (3, 'Literacy Tutoring Program',   'Tutor children in reading and writing.',                     'Salvador, BA', '2026-07-30');
 
 -- ============================================================
--- 12. DADOS DE EXEMPLO: project_categories
+-- 12. EXAMPLE DATA: project_categories
 -- ============================================================
 INSERT INTO project_categories (project_id, category_id) VALUES
 (1, 3), (1, 4),
@@ -146,11 +146,11 @@ INSERT INTO project_categories (project_id, category_id) VALUES
 (14, 4),
 (15, 2), (15, 3);
 
--- ============================================================
--- 13. NOTA: A conta admin (admin@example.com) deve ser criada
---     pela PÁGINA DE CADASTRO do site (para que o bcrypt funcione).
---     Depois, execute o UPDATE abaixo para dar role admin:
+-- ==========================================================
+-- 13. NOTE: The admin account (admin@example.com) must be created
+-- through the website's REGISTRATION PAGE (for bcrypt to work).
+-- Then, run the UPDATE below to give the admin role:
 --
---     UPDATE users SET role_id = (SELECT role_id FROM roles WHERE role_name = 'admin')
---     WHERE email = 'admin@example.com';
+-- UPDATE users SET role_id = (SELECT role_id FROM roles WHERE role_name = 'admin')
+-- WHERE email = 'admin@example.com';
 -- ============================================================
