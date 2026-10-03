@@ -110,21 +110,21 @@ INSERT INTO categories (name) VALUES
 -- 11. EXAMPLE DATA: service_projects
 -- ============================================================
 INSERT INTO service_projects (organization_id, title, description, location, date) VALUES
-(1, 'Community Center Renovation', 'Renovate the local community center to serve more families.', 'São Paulo, SP', '2026-03-15'),
-(1, 'Affordable Housing Build',    'Build affordable homes for low-income families.',           'Rio de Janeiro, RJ', '2026-04-20'),
-(1, 'School Roof Repair',          'Repair the roof of a local public school.',                  'Belo Horizonte, MG', '2026-05-10'),
-(1, 'Park Restoration Project',    'Restore a public park with new benches and trees.',          'Curitiba, PR', '2026-06-05'),
-(1, 'Bridge Safety Inspection',    'Inspect and reinforce a pedestrian bridge.',                 'Porto Alegre, RS', '2026-07-12'),
-(2, 'Urban Garden Setup',          'Create an urban garden in a vacant lot.',                    'São Paulo, SP', '2026-03-22'),
-(2, 'Composting Workshop',         'Teach composting techniques to local residents.',            'Salvador, BA', '2026-04-18'),
-(2, 'School Garden Program',       'Build gardens in three public schools.',                     'Recife, PE', '2026-05-14'),
-(2, 'Farmers Market Support',      'Help local farmers sell produce at markets.',                'Fortaleza, CE', '2026-06-09'),
-(2, 'Seed Distribution Drive',     'Distribute seeds to community gardeners.',                   'Manaus, AM', '2026-07-25'),
-(3, 'Food Bank Volunteer Day',     'Sort and distribute food at the local food bank.',           'São Paulo, SP', '2026-03-30'),
-(3, 'Senior Center Visit',         'Spend time with seniors at a local care center.',            'Brasília, DF', '2026-04-27'),
-(3, 'Homeless Shelter Support',    'Prepare meals and provide supplies for a shelter.',          'Rio de Janeiro, RJ', '2026-05-19'),
-(3, 'Blood Donation Drive',        'Coordinate a blood donation campaign.',                      'Belo Horizonte, MG', '2026-06-22'),
-(3, 'Literacy Tutoring Program',   'Tutor children in reading and writing.',                     'Salvador, BA', '2026-07-30');
+(1, 'Community Center Renovation', 'Renovate the local community center to serve more families.', 'São Paulo, SP', '2027-03-15'),
+(1, 'Affordable Housing Build',    'Build affordable homes for low-income families.',           'Rio de Janeiro, RJ', '2027-04-20'),
+(1, 'School Roof Repair',          'Repair the roof of a local public school.',                  'Belo Horizonte, MG', '2027-05-10'),
+(1, 'Park Restoration Project',    'Restore a public park with new benches and trees.',          'Curitiba, PR', '2027-06-05'),
+(1, 'Bridge Safety Inspection',    'Inspect and reinforce a pedestrian bridge.',                 'Porto Alegre, RS', '2027-07-12'),
+(2, 'Urban Garden Setup',          'Create an urban garden in a vacant lot.',                    'São Paulo, SP', '2027-03-22'),
+(2, 'Composting Workshop',         'Teach composting techniques to local residents.',            'Salvador, BA', '2027-04-18'),
+(2, 'School Garden Program',       'Build gardens in three public schools.',                     'Recife, PE', '2027-05-14'),
+(2, 'Farmers Market Support',      'Help local farmers sell produce at markets.',                'Fortaleza, CE', '2027-06-09'),
+(2, 'Seed Distribution Drive',     'Distribute seeds to community gardeners.',                   'Manaus, AM', '2027-07-25'),
+(3, 'Food Bank Volunteer Day',     'Sort and distribute food at the local food bank.',           'São Paulo, SP', '2027-03-30'),
+(3, 'Senior Center Visit',         'Spend time with seniors at a local care center.',            'Brasília, DF', '2027-04-27'),
+(3, 'Homeless Shelter Support',    'Prepare meals and provide supplies for a shelter.',          'Rio de Janeiro, RJ', '2027-05-19'),
+(3, 'Blood Donation Drive',        'Coordinate a blood donation campaign.',                      'Belo Horizonte, MG', '2027-06-22'),
+(3, 'Literacy Tutoring Program',   'Tutor children in reading and writing.',                     'Salvador, BA', '2027-07-30');
 
 -- ============================================================
 -- 12. EXAMPLE DATA: project_categories
