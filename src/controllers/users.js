@@ -5,6 +5,7 @@ import {
     verifyPassword,
     getAllUsers
 } from '../models/users.js';
+import { validationResult } from 'express-validator';
 
 /**
  * Mostra o formulário de registro.
@@ -16,8 +17,18 @@ const showRegisterForm = (req, res) => {
 
 /**
  * Processa o formulário de registro.
+ * Valida os dados e cria o usuário com role 'user' por padrão.
  */
 const processRegister = async (req, res) => {
+    // W05: verifica erros de validação do registerValidation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errors.array().forEach((error) => {
+            req.flash('error', error.msg);
+        });
+        return res.redirect('/register');
+    }
+
     const { name, email, password } = req.body;
 
     try {
@@ -98,8 +109,6 @@ const processLogout = (req, res) => {
  * ============================================================
  * W05: Middleware requireLogin (fábrica de funções)
  * ============================================================
- * Garante que o usuário está logado. Se não estiver,
- * redireciona para /login com uma mensagem.
  */
 const requireLogin = (req, res, next) => {
     if (!req.session.user) {
@@ -134,8 +143,6 @@ const requireRole = (role) => {
  * ============================================================
  * W05 Assignment: Mostra a página com todos os usuários
  * ============================================================
- * Esta rota é protegida por requireRole('admin') no routes.js,
- * então só chega aqui se o usuário for admin.
  */
 const showUsersPage = async (req, res, next) => {
     try {
